@@ -1,9 +1,8 @@
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
+from application.database.Base import Base
 from datetime import datetime
 from typing import Optional
 
-Base=declarative_base()
 
 class Book(Base):
     __tablename__='books'

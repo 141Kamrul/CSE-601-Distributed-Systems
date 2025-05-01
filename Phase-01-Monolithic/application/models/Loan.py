@@ -3,8 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 from typing import Optional
 from enum import Enum as PyEnum
+from application.database.Base import Base
 
-Base=declarative_base()
 
 class LoanStatus(PyEnum):
         active="ACTIVE"
