@@ -1,28 +1,33 @@
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from os import getenv
+from dotenv import load_dotenv
+from contextlib import contextmanager
+from application.database.Base import Base
 
-
-class Session:
+class _Session:
     _engine=None
     _session_factory=None
     meta=MetaData()
 
 
     def __init__(self):
+        load_dotenv()
         database_url=getenv('DATABASE_URL')
         if not database_url:
-            raise ValueError("DATABASE_URL is not set in the environment variables.")
+            raise ValueError("DATABASE_URL is not set in the environment variable")
 
         self._engine=create_engine(database_url,echo=True)
         self._session_factory=sessionmaker(
-            bind=engine,
+            bind=self._engine,
             autocommit=False,
-            autoflush=False
+            autoflush=False,
+            expire_on_commit=False
             )
         self.meta.bind=self._engine
+        _Session._engine=self._engine
         
-
+    @contextmanager
     def get_session(self):
         session=self._session_factory()
         try:
@@ -35,7 +40,7 @@ class Session:
             session.close()
 
     def create_tables(self):
-        self.meta.create_all(self._engine)
+        Base.metadata.create_all(bind=self._engine)
 
 
     def read_all(self, model_cls):
@@ -64,8 +69,8 @@ class Session:
             session.delete(instance)
             session.commit()
             return True
-       
-        
+
+
     def update(self, model_cls, id, updates):
         with cls.get_session() as session:
             instance=session.get(model_cls, id)
@@ -78,3 +83,6 @@ class Session:
             session.commit()
             session.refresh(instance)
             return instance
+
+
+session_instance=_Session()

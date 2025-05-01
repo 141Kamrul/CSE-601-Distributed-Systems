@@ -1,20 +1,44 @@
-
+from fastapi  import HTTPException
+from application.schemas.User import RegisterResponse, RegisterAction, UserResponse
+from application.models.User import User as UserTable
+from application.database.Session import session_instance
+from typing  import List
 
 class User:
 
-    def __init__(self, name=None, email=None, role=None,):
-        self._name = name
-        self._email = email
-        self._role = role
+    def register(self, registerInfo: RegisterAction) -> RegisterResponse:
+        try:
+            user=UserTable(username=registerInfo.name,
+                           email=registerInfo.email,
+                           role=registerInfo.role
+                        )
+            session_instance.write(user)
+            return RegisterResponse(message="User registered succesfully")
+        except:
+            return RegisterResponse(message="Registration failed")
 
-    def register(self, name, email, role):
-        self.__init__(name, email, role)
+    def getUsers(self) -> List[UserResponse]:
+        users=session_instance.read_all(UserTable)
+        print(users)
+        userResponses=[]
+        for user in  users:
+            userResponses.append(
+                UserResponse(
+                    user_id=user.id,
+                    name=user.username,
+                    email=user.email,
+                    role=user.role
+                )
+            )
+        return userResponses
 
-        db_user = UserTable(username=self._username, fullname=self._fullname, email=self._email, 
-                            phone=self._phoneNumber, hashed_password=AuthHandler.get_password_hash(password))
-        with Database.get_session() as session:
-            session.add(db_user)
-            session.commit()
-            session.refresh(db_user)
-            login_response = self.login(username, password)
-            return LoginResponse(access_token=login_response.access_token, token_type=login_response.token_type)
+    def getUser(self, id) -> UserResponse:
+        user=session_instance.read_one(UserTable,id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        return UserResponse(
+            user_id=user.id,
+            name=user.username,
+            email=user.email,
+            role=user.role
+        )
