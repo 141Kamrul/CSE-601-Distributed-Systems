@@ -1,5 +1,5 @@
 from fastapi  import HTTPException
-from application.schemas.User import RegisterResponse, RegisterAction, UserResponse
+from application.schemas.User import RegisterResponse, RegisterAction, UserResponse, UsersResponse
 from application.models.User import User as UserTable
 from application.database.Session import session_instance
 from typing  import List
@@ -17,27 +17,26 @@ class User:
         except:
             return RegisterResponse(message="Registration failed")
 
-    def getUsers(self) -> List[UserResponse]:
+    def getUsers(self) -> List[UsersResponse]:
         users=session_instance.read_all(UserTable)
         print(users)
-        userResponses=[]
+        usersResponses=[]
         for user in  users:
             userResponses.append(
-                UserResponse(
+                UsersResponse(
                     user_id=user.id,
                     name=user.username,
                     email=user.email,
                     role=user.role
                 )
             )
-        return userResponses
+        return usersResponses
 
     def getUser(self, id) -> UserResponse:
         user=session_instance.read_one(UserTable,id)
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         return UserResponse(
-            user_id=user.id,
             name=user.username,
             email=user.email,
             role=user.role

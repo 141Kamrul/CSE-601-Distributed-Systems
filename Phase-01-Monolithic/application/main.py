@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from application.api.User import router as user_router
+from application.api.Book import router as book_router
 from application.database.Session import session_instance
 from sqlalchemy  import  text
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,6 +18,7 @@ app.add_middleware(
 session_instance.create_tables()
 
 app.include_router(user_router)
+app.include_router(book_router)
 
 
 @app.get("/")
