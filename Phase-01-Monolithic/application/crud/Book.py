@@ -23,8 +23,8 @@ class Book:
         print(books)
         booksResponses=[]
         for book in books:
-            bookResponses.append(
-                BookResponse(
+            booksResponses.append(
+                BooksResponse(
                     book_id=book.id,
                     title=book.title,
                     author=book.author,
@@ -48,7 +48,7 @@ class Book:
             updated_at=book.update_time
         )
 
-    def updateBook(self, id, updateInfo) -> BookResponse:
+    def update(self, id, updateInfo) -> BookResponse:
         book=session_instance.read_one(BookTable,id)
         if not book:
             raise HTTPException(status_code=404, detail="Book not found")
@@ -63,7 +63,7 @@ class Book:
             updated_at=updatedBook.update_time
         )
 
-    def deleteBook(self,  id) -> DeleteResponse:
+    def delete(self,  id) -> DeleteResponse:
         if session_instance.delete(BookTable, id):
             return DeleteResponse(message="Book deleted successfully")
         else:

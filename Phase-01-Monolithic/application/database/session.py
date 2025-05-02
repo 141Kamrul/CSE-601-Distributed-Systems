@@ -72,12 +72,12 @@ class _Session:
 
 
     def update(self, model_cls, id, updates):
-        with cls.get_session() as session:
+        with self.get_session() as session:
             instance=session.get(model_cls, id)
             if not instance:
                 return None
 
-            for key, value in updates.items():
+            for key, value in updates.dict(exclude_unset=True).items():
                 if key != "id":  
                     setattr(instance, key, value)
             session.commit()

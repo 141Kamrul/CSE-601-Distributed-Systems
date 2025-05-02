@@ -20,8 +20,8 @@ def getBook(id):
     return book.getBook(id)
 
 @router.put("/updatebook/{id}", response_model=BookResponse)
-def update(updateInfo: UpdateBookAction):
-    return book.update()
+def update(id, updateInfo: UpdateBookAction):
+    return book.update(id, updateInfo)
 
 @router.delete("/deletebook/{id}", response_model=DeleteResponse)
 def delete(id):
