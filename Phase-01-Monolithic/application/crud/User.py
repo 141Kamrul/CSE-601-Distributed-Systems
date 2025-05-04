@@ -11,7 +11,7 @@ class User:
             user=UserTable(username=registerInfo.name,
                            email=registerInfo.email,
                            role=registerInfo.role
-                        )
+            )
             session_instance.write(user)
             return RegisterResponse(message="User registered succesfully")
         except:
@@ -22,7 +22,7 @@ class User:
         print(users)
         usersResponses=[]
         for user in  users:
-            userResponses.append(
+            usersResponses.append(
                 UsersResponse(
                     user_id=user.id,
                     name=user.username,
