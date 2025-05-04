@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from application.crud.Loan import Loan
-from application.schemas.Loan import LoanAction, LoanResponse, ReturnResponse,  LoanIdAction, StatusAction
+from application.schemas.Loan import LoanAction, LoanResponse, ReturnResponse,  LoanIdAction
 from typing import List
 
 router=APIRouter(prefix='',tags=['Loan'])
@@ -13,7 +13,7 @@ def issueloan(loanInfo: LoanAction):
 
 
 @router.post("/returns/", response_model=ReturnResponse)
-def returns(loanId: LoanIdAction, sta:StatusAction):
+def returns(loanId: LoanIdAction):
     return loan.returns(loanId)
 '''
 @router.get("/getuser/{id}",  response_model=UserResponse)

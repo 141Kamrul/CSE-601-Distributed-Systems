@@ -1,10 +1,10 @@
 from fastapi  import HTTPException
-from application.schemas.Loan import LoanResponse, LoanAction, LoanIdAction, ReturnResponse
+from application.schemas.Loan import LoanResponse, LoanAction, LoanIdAction, ReturnResponse, StatusAction
 from application.models.Loan import Loan as LoanTable
 from application.database.Session import session_instance
 from typing import List
 from sqlalchemy.exc import SQLAlchemyError
-from  datetime import datetime
+from  datetime import datetime, timezone
 
 class Loan:
 
@@ -33,15 +33,18 @@ class Loan:
 
     def returns(self,  loanId: LoanIdAction) -> ReturnResponse:
         loan=session_instance.read_one(LoanTable, loanId.loan_id)
+        updatedStatus=StatusAction(status="RETURNED")
+        updatedLoan=session_instance.update(LoanTable,loanId.loan_id,updatedStatus)
+
         
         return ReturnResponse(
-                id=loan.id,
-                user_id=loan.user_id,
-                book_id=loan.book_id,
-                issue_date=loan.issue_time,
-                due_date=loan.original_due_time,
-                return_date=datetime.utcnow,
-                status=loan.status
+                id=updatedLoan.id,
+                user_id=updatedLoan.user_id,
+                book_id=updatedLoan.book_id,
+                issue_date=updatedLoan.issue_time,
+                due_date=updatedLoan.original_due_time,
+                return_date=datetime.now(timezone.utc),
+                status=updatedLoan.status
             )
         
     '''
