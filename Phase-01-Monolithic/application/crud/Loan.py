@@ -1,10 +1,11 @@
 from fastapi  import HTTPException
-from application.schemas.Loan import LoanResponse, LoanAction, LoanIdAction, ReturnResponse, StatusAction
+from application.schemas.Loan import LoanResponse, LoanAction, LoanIdAction, ReturnResponse, StatusAction, LoanOfUserResponse
 from application.models.Loan import Loan as LoanTable
 from application.database.Session import session_instance
 from typing import List
 from sqlalchemy.exc import SQLAlchemyError
-from  datetime import datetime, timezone
+from datetime import datetime, timezone
+from application.crud.User import User
 
 class Loan:
 
@@ -47,13 +48,14 @@ class Loan:
                 status=updatedLoan.status
             )
         
-    '''
-    def getUser(self, id) -> UserResponse:
-        user=session_instance.read_one(UserTable,id)
+    
+    def getUserLoans(self, id) -> List[LoanOfUserResponse]:
+        user=User()
+        user=user.getUser(id)
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         return UserResponse(
             name=user.username,
             email=user.email,
             role=user.role
-        )'''
+        )

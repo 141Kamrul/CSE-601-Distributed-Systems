@@ -32,3 +32,8 @@ class UpdateBookAction(BaseModel):
 
 class DeleteResponse(BaseModel):
     message: str
+
+class MiniBookResponse(BaseModel):
+    book_id: int
+    title: str
+    author: str

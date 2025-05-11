@@ -1,5 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel
+from application.schemas.Book import MiniBookResponse
+
 
 class LoanAction(BaseModel):
     user_id:  int
@@ -28,3 +30,11 @@ class ReturnResponse(BaseModel):
 
 class StatusAction(BaseModel):
     status: str
+
+class LoanOfUserResponse(BaseModel):
+    loan_id: int
+    miniBookResponse:  MiniBookResponse
+    issue_date:  datetime
+    due_date: datetime
+    return_date:  datetime
+    staus: str
