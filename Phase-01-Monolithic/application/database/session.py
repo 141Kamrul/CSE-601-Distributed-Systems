@@ -4,6 +4,7 @@ from os import getenv
 from dotenv import load_dotenv
 from contextlib import contextmanager
 from application.database.Base import Base
+from typing import Type, Any
 
 class _Session:
     _engine=None
@@ -51,6 +52,19 @@ class _Session:
     def read_one(self, model_cls, id):
         with self.get_session() as session:
             return session.get(model_cls,id)
+
+    def query_filter(self, model_cls: Type, **filters: Any):
+        with self.get_session() as session:
+            query=session.query(model_cls)
+            for key, value in filters.items():
+                query=query.filter(getattr(model_cls,key)==value)
+            return query
+
+    def read_filter_all(self, model_cls: Type, **filters: Any):
+        return self.query_filter(model_cls,**filters).all()
+
+    def read_filter_one(self, model_cls: Type, **filters: Any):
+        return self.query_filter(model_cls,**filters).first()
 
 
     def write(self, tableElement):

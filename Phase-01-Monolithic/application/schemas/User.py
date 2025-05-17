@@ -18,3 +18,8 @@ class UsersResponse(BaseModel):
     name: str
     email: str
     role: str
+
+class MiniUserResponse(BaseModel):
+    user_id: int
+    name: str
+    email: str

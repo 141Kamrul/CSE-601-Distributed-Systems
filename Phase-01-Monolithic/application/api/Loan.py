@@ -1,13 +1,13 @@
 from fastapi import APIRouter
-from application.crud.Loan import Loan
-from application.schemas.Loan import LoanAction, LoanResponse, ReturnResponse,  LoanIdAction,LoanOfUserResponse
+from application.crud.Loan import Loan,  User
+from application.schemas.Loan import LoanAction, LoanResponse, ReturnResponse,  LoanIdAction, LoanOfUserResponse, ExtendedLoanResponse, ExtendLoanAction
 from typing import List
 
 router=APIRouter(prefix='',tags=['Loan'])
 
 loan=Loan()
 
-@router.post("/loan/", response_model=LoanResponse)
+@router.post("/loans/", response_model=LoanResponse)
 def issueloan(loanInfo: LoanAction):
     return loan.issueloan(loanInfo)
 
@@ -16,14 +16,17 @@ def issueloan(loanInfo: LoanAction):
 def returns(loanId: LoanIdAction):
     return loan.returns(loanId)
 
-@router.get("loans/{user_id}",  response_model=List[LoanOfUserResponse])
-def getUserLoans(user_id):
-    return loan.getUserLoans(user_id)
 
-@router.get("loans/overdue",  response_model=List[LoanOfUserResponse])
-def getUserLoans(user_id):
-    return loan.getUserLoans(user_id)
+@router.get("/loans/{user_id}", response_model=List[LoanOfUserResponse])
+def getLoansUser(user_id):
+    return loan.getLoansUser(user_id)
 
-@router.put("loans/{id}/extend",  response_model=List[LoanOfUserResponse])
-def getUserLoans(user_id):
-    return loan.getUserLoans(user_id)
+@router.get("/loans/overdue", response_model=List[LoanOfUserResponse])
+def getOverdueLoans():
+    return loan.getOverdueLoans()
+
+
+@router.put("/loans/{loan_id}/extend",  response_model=ExtendedLoanResponse)
+def extendUserLoan(loan_id, extendInfo: ExtendLoanAction):
+    return loan.extendUserLoan(loan_id, extendInfo)
+

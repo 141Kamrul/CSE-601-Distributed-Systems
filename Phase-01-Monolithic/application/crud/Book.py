@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from application.schemas.Book import AddBookAction, AddBookResponse, BookResponse, BooksResponse, DeleteResponse, UpdateBookAction
+from application.schemas.Book import AddBookAction, AddBookResponse, BookResponse, BooksResponse, DeleteResponse, UpdateBookAction, MiniBookResponse
 from application.models.Book import Book as BookTable
 from application.database.Session import session_instance
 from typing import List
@@ -68,3 +68,11 @@ class Book:
             return DeleteResponse(message="Book deleted successfully")
         else:
             return DeleteResponse(message="Book not found")
+
+    def getMiniBook(self, id) -> MiniBookResponse:
+        book=session_instance.read_one(BookTable, id)
+        return MiniBookResponse(
+            book_id=book.id,
+            title=book.title,
+            author=book.author
+        )

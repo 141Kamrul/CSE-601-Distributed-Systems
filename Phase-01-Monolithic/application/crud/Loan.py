@@ -1,11 +1,12 @@
 from fastapi  import HTTPException
-from application.schemas.Loan import LoanResponse, LoanAction, LoanIdAction, ReturnResponse, StatusAction, LoanOfUserResponse
+from application.schemas.Loan import LoanResponse, LoanAction, LoanIdAction, ReturnResponse, StatusAction, LoanOfUserResponse, ReturnTimeAction, OverdueLoanResponse, ExtendedLoanResponse
 from application.models.Loan import Loan as LoanTable
 from application.database.Session import session_instance
 from typing import List
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime, timezone
 from application.crud.User import User
+from application.crud.Book import Book
 
 class Loan:
 
@@ -35,7 +36,8 @@ class Loan:
     def returns(self,  loanId: LoanIdAction) -> ReturnResponse:
         loan=session_instance.read_one(LoanTable, loanId.loan_id)
         updatedStatus=StatusAction(status="RETURNED")
-        updatedLoan=session_instance.update(LoanTable,loanId.loan_id,updatedStatus)
+        updatedReturnTime=ReturnTimeAction(return_time=timezone.utc)
+        updatedLoan=session_instance.update(LoanTable,loanId.loan_id,updatedStatus,updatedReturnTime)
 
         
         return ReturnResponse(
@@ -44,18 +46,55 @@ class Loan:
                 book_id=updatedLoan.book_id,
                 issue_date=updatedLoan.issue_time,
                 due_date=updatedLoan.original_due_time,
-                return_date=datetime.now(timezone.utc),
+                return_date=updatedLoan.return_time,
                 status=updatedLoan.status
             )
         
     
-    def getUserLoans(self, id) -> List[LoanOfUserResponse]:
+    def getLoansUser(self, id) -> List[LoanOfUserResponse]:
+        loans=session_instance.read_filter_all(LoanTable, user_id=id)
+        loanResponses=[]
+        for loan in loans:
+            book=Book()
+            loanResponses.append(LoanOfUserResponse(
+                loan_id=loan.id,
+                miniBookResponse=book.getMiniBook(id),
+                issue_date=loan.issue_time,
+                due_date=loan.original_due_time,
+                return_date=loan.return_time,
+                status=loan.status,
+            ))
+        return loanResponses
+
+    def getOverdueLoans(self) -> List[OverdueLoanResponse]:
+        loans=session_instance.read_filter_all(LoanTable, status="ACTIVE")
         user=User()
-        user=user.getUser(id)
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        return UserResponse(
-            name=user.username,
-            email=user.email,
-            role=user.role
+        book=Book()
+        overDueLoans=[]
+        for loan in loans:
+            overDueLoans.append(
+                OverdueLoanResponse(
+                    loan_id=loan.id,
+                    miniUserResponse=user.getMiniUser(loan.user_id),
+                    miniBookResponse=book.getMiniBook(loan.book_id),
+                    issue_date=loan.issue_time,
+                    due_date=loan.original_due_time,
+                    days_overdue=datetime.utcnow-loan.original_due_time
+                )
+            )
+        return overDueLoans
+
+    def extendUserLoan(self, id, extendInfo) -> ExtendedLoanResponse:
+        loan=session_instance.read_one(id)
+        updatedLoan=session_instance.update(LoanTable, id, extendInfo)
+        return ExtendedLoanResponse(
+            loan_id=updatedLoan.id,
+            user_id=updatedLoan.user_id,
+            book_id=updatedLoan.book_id,
+            issue_date=updatedLoan.issue_time,
+            original_due_date=updatedLoan.original_due_time,
+            extended_due_date=datetime,
+            status=updatedLoan.status,
+            extension_count=int
         )
+

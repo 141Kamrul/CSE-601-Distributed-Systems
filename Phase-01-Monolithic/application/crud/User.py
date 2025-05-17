@@ -1,5 +1,5 @@
 from fastapi  import HTTPException
-from application.schemas.User import RegisterResponse, RegisterAction, UserResponse, UsersResponse
+from application.schemas.User import RegisterResponse, RegisterAction, UserResponse, UsersResponse, MiniUserResponse
 from application.models.User import User as UserTable
 from application.database.Session import session_instance
 from typing  import List
@@ -41,3 +41,16 @@ class User:
             email=user.email,
             role=user.role
         )
+
+    def getMiniUser(self, id) -> MiniUserResponse:
+        user=session_instance.read_one(UserTable,id)
+        return MiniUserResponse(
+            user_id=user.id,
+            name=user.username,
+            email=user.email
+        )
+
+    
+
+    
+
