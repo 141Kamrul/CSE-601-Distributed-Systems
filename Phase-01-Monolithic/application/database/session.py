@@ -54,6 +54,7 @@ class _Session:
             return session.get(model_cls,id)
 
     def query_filter(self, model_cls: Type, **filters: Any):
+        print("filters",filters)
         with self.get_session() as session:
             query=session.query(model_cls)
             for key, value in filters.items():

@@ -27,21 +27,19 @@ class ReturnResponse(BaseModel):
     due_date:  datetime
     issue_date: datetime
     status: str
-    return_date: datetime
+    return_date: datetime | None
 
-class StatusAction(BaseModel):
+class ReturnUpdateAction(BaseModel):
     status: str
-
-class ReturnTimeAction(BaseModel):
-    return_time: datetime
+    return_time: datetime | None
 
 class LoanOfUserResponse(BaseModel):
     loan_id: int
     miniBookResponse: MiniBookResponse
-    issue_date:  datetime
+    issue_date: datetime
     due_date: datetime
-    return_date:  datetime
-    staus: str
+    return_date: datetime | None
+    status: str
 
 class OverdueLoanResponse(BaseModel):
     loan_id: int
@@ -57,7 +55,7 @@ class ExtendedLoanResponse(BaseModel):
     book_id: int
     issue_date: datetime
     original_due_date: datetime
-    extended_due_date: datetime
+    extended_due_date: datetime | None
     status: str
     extension_count: int
 
