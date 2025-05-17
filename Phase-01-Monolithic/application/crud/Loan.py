@@ -98,3 +98,49 @@ class Loan:
             extension_count=int
         )
 
+    def getTotalOverdueLoans(self):
+        loans=session_instance.read_all(LoanTable)
+        count=0
+        for loan in loans:
+            if loan.status=="ACTIVE":
+                count+=1
+        return count
+
+    def getLoansToday(self):
+        loans=session_instance.read_all(LoanTable)
+        count=0
+        for loan in loans:
+            if loan.issue_time.date()==datetime.utcnow().date():
+                count+=1
+        return count
+
+    def getReturnsToday(self):
+        loans=session_instance.read_all(LoanTable)
+        count=0
+        for loan in loans:
+            if loan.return_time.date()==datetime.utcnow().date():
+                count+=1
+        return count
+
+    def getActiveUsers(self):
+        loans=session_instance.read_filter_all(LoanTable)
+        user_stats = defaultdict(lambda: {
+            "books_borrowed": 0,
+            "current_borrows": 0
+        })
+    
+    
+        for loan in all_loans:
+            user_stats[loan.user_id]["books_borrowed"] += 1
+            if loan.status == "ACTIVE":
+                user_stats[loan.user_id]["current_borrows"] += 1
+    
+        sorted_users = sorted(
+            user_stats.items(),
+            key=lambda x: x[1]["current_borrows"],
+            reverse=True
+        )
+    
+        return dict(sorted_users)
+
+

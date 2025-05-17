@@ -98,5 +98,11 @@ class _Session:
             session.refresh(instance)
             return instance
 
+    def count_all(self, model_cls):
+        with self.get_session() as session:
+            return session.query(model_cls).count()
+
+    def count_filter(self, model_cls, **filters: any):
+        self.query_filter(model_cls,**filters).count()
 
 session_instance=_Session()

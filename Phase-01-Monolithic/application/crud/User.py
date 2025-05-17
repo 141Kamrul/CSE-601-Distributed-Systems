@@ -1,5 +1,5 @@
 from fastapi  import HTTPException
-from application.schemas.User import RegisterResponse, RegisterAction, UserResponse, UsersResponse, MiniUserResponse
+from application.schemas.User import RegisterResponse, RegisterAction, UserResponse, UsersResponse, MiniUserResponse, UsernameResponse
 from application.models.User import User as UserTable
 from application.database.Session import session_instance
 from typing  import List
@@ -49,6 +49,13 @@ class User:
             name=user.username,
             email=user.email
         )
+
+    def getTotalUser(self):
+        return session_instance.count_all(UserTable)
+
+    def getUsername(self, id):
+        user=session_instance.read_one(UserTable,id)
+        return UsernameResponse(name=user.username)
 
     
 

@@ -23,3 +23,6 @@ class MiniUserResponse(BaseModel):
     user_id: int
     name: str
     email: str
+
+class UsernameResponse(BaseModel):
+    name: str

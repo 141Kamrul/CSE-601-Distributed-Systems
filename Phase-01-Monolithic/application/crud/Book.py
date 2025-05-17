@@ -76,3 +76,30 @@ class Book:
             title=book.title,
             author=book.author
         )
+
+    def getTotalBooks(self):
+        return session_instance.count_all(BookTable)
+
+    def getTotalAvailableBooks(self):
+        books=session_instance.read_all(BookTable)
+        count=0
+        for book in books:
+            if book.available_copies>0:
+                count+=1
+        return count
+
+    def getTotalBorrowedBooks(self):
+        books=session_instance.read_all(BookTable)
+        count=0
+        for book in books:
+            count+=book.copies-book.available_copies
+        return count
+
+    def getPopularBooks(self):
+        books=session_instance.read_all(BookTable)
+        sorted_books = sorted(
+            books,
+            key=lambda book: book.copies - book.available_copies,
+            reverse=True  
+        )
+        return sorted_books
