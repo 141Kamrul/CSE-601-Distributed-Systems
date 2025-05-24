@@ -48,7 +48,14 @@ class Book:
             created_at=updatedBook.created_at,
             updated_at=updatedBook.updated_at
         )
+    
+    def delete(self,  id) :
+        if session_instance.delete(BookTable, id):
+            return {"message": "204  no  content"}
+        else:
+            return {"message": "Book not found"}
 
+    #
 
     def getBooks(self) -> List[BooksResponse]:
         books=session_instance.read_all(BookTable)
@@ -68,11 +75,6 @@ class Book:
 
 
 
-    def delete(self,  id) :
-        if session_instance.delete(BookTable, id):
-            return {"message": "204  no  content"}
-        else:
-            return {"message": "Book not found"}
 
     def getMiniBook(self, id) -> MiniBookResponse:
         book=session_instance.read_one(BookTable, id)
