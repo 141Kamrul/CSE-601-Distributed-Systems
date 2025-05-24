@@ -1,29 +1,28 @@
 from fastapi import APIRouter
 from application.crud.Book import Book
-from application.schemas.Book import AddBookAction, AddBookResponse, BookResponse, BooksResponse, DeleteResponse, UpdateBookAction
+from application.schemas.Book import AddBookAction, DetailedBookResponse, BooksResponse, UpdateBookAction
 from typing import List
 
 router=APIRouter(prefix='',tags=['Book'])
 
 book=Book()
 
-@router.post("/addbook/", response_model=AddBookResponse)
+@router.post("/books/")
 def add(bookInfo: AddBookAction):
     return book.add(bookInfo)
 
-@router.get("/getbooks/", response_model=List[BooksResponse])
-def getBooks():
-    return book.getBooks()
-
-@router.get("/getbook/{id}", response_model=BookResponse)
+@router.get("/books/{id}", response_model=DetailedBookResponse)
 def getBook(id):
     return book.getBook(id)
 
-@router.put("/updatebook/{id}", response_model=BookResponse)
+@router.put("/books/{id}", response_model=DetailedBookResponse)
 def update(id, updateInfo: UpdateBookAction):
     return book.update(id, updateInfo)
 
-@router.delete("/deletebook/{id}", response_model=DeleteResponse)
+@router.delete("/deletebook/{id}")
 def delete(id):
     return book.delete(id)
-
+#
+@router.get("/getbooks/", response_model=List[BooksResponse])
+def getBooks():
+    return book.getBooks()

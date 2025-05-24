@@ -1,7 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel
 from application.schemas.Book import MiniBookResponse
-from application.schemas.User import MiniUserResponse
+from application.schemas.User import UserResponse
 
 
 class LoanAction(BaseModel):
@@ -9,48 +9,47 @@ class LoanAction(BaseModel):
     book_id:  int
     due_date: datetime
 
-class LoanIdAction(BaseModel):
-    loan_id: int
-
 class LoanResponse(BaseModel):
     id: int
     user_id: int
     book_id:  int
-    due_date:  datetime
     issue_date: datetime
+    due_date: datetime
     status: str
+
+class ReturnAction(BaseModel):
+    loan_id: int
 
 class ReturnResponse(BaseModel):
     id: int
     user_id: int
     book_id:  int
-    due_date:  datetime
     issue_date: datetime
+    due_date: datetime
+    return_date: datetime
     status: str
-    return_date: datetime | None
-
-class ReturnUpdateAction(BaseModel):
-    status: str
-    return_time: datetime | None
 
 class LoanOfUserResponse(BaseModel):
-    loan_id: int
-    miniBookResponse: MiniBookResponse
+    id: int
+    book: MiniBookResponse
     issue_date: datetime
     due_date: datetime
     return_date: datetime | None
     status: str
 
 class OverdueLoanResponse(BaseModel):
-    loan_id: int
-    miniUserResponse: MiniUserResponse
-    miniBookResponse: MiniBookResponse
+    id: int
+    user: UserResponse
+    book: MiniBookResponse
     issue_date: datetime
     due_date: datetime
-    days_overdue: datetime
+    days_overdue: int
+
+class ExtendLoanAction(BaseModel):
+    extension_days: int
 
 class ExtendedLoanResponse(BaseModel):
-    loan_id: int
+    id: int
     user_id: int
     book_id: int
     issue_date: datetime
@@ -59,5 +58,14 @@ class ExtendedLoanResponse(BaseModel):
     status: str
     extension_count: int
 
-class ExtendLoanAction(BaseModel):
-    extended_days: int
+#
+class LoanIdAction(BaseModel):
+    loan_id: int
+
+ 
+
+class ReturnUpdateAction(BaseModel):
+    status: str
+    return_time: datetime | None
+
+

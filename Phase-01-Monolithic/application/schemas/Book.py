@@ -7,33 +7,29 @@ class AddBookAction(BaseModel):
     isbn: str
     copies: int
 
-class AddBookResponse(BaseModel):
-    message:  str
-
-class BookResponse(BaseModel):
+class DetailedBookResponse(BaseModel):
+    id: int
     title: str
     author: str
     isbn: str
     copies: int
     available_copies: int
     created_at: datetime
-    updated_at: datetime
+    updated_at: datetime | None 
 
+class UpdateBookAction(BaseModel):
+    copies: int
+    available_copies: int
+
+class MiniBookResponse(BaseModel):
+    book_id: int
+    title: str
+    author: str
+
+#
 class BooksResponse(BaseModel):
     book_id: int
     title: str
     author: str
     isbn: str
     copies: int
-
-class UpdateBookAction(BaseModel):
-    copies: int
-    available_copies: int
-
-class DeleteResponse(BaseModel):
-    message: str
-
-class MiniBookResponse(BaseModel):
-    book_id: int
-    title: str
-    author: str

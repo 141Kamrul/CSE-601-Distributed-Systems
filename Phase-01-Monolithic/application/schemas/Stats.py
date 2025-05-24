@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 
-
 class PopularBookResponse(BaseModel):
     book_id: int
     title: str

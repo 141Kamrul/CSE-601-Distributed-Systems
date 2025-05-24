@@ -1,12 +1,12 @@
 from fastapi import HTTPException
-from application.schemas.Book import AddBookAction, AddBookResponse, BookResponse, BooksResponse, DeleteResponse, UpdateBookAction, MiniBookResponse
+from application.schemas.Book import AddBookAction, DetailedBookResponse, BooksResponse, UpdateBookAction, MiniBookResponse
 from application.models.Book import Book as BookTable
 from application.database.Session import session_instance
 from typing import List
 
 class Book:
 
-    def add(self, bookInfo: AddBookAction) -> AddBookResponse:
+    def add(self, bookInfo: AddBookAction):
         try:
             book=BookTable(title=bookInfo.title,
                            author=bookInfo.author,
@@ -14,9 +14,9 @@ class Book:
                            copies=bookInfo.copies
                         )
             session_instance.write(book)
-            return AddBookResponse(message="Book added succesfully")
+            return {"message":  "Book added succesfully"}
         except:
-            return AddBookResponse(message="Addition failed")
+            return {"message": "Addition failed"}
 
     def getBooks(self) -> List[BooksResponse]:
         books=session_instance.read_all(BookTable)
@@ -34,7 +34,7 @@ class Book:
             )
         return booksResponses
 
-    def getBook(self, id) -> BookResponse:
+    def getBook(self, id) -> DetailedBookResponse:
         book=session_instance.read_one(BookTable,id)
         if not book:
             raise HTTPException(status_code=404, detail="Book not found")
@@ -48,7 +48,7 @@ class Book:
             updated_at=book.update_time
         )
 
-    def update(self, id, updateInfo) -> BookResponse:
+    def update(self, id, updateInfo) -> DetailedBookResponse:
         book=session_instance.read_one(BookTable,id)
         if not book:
             raise HTTPException(status_code=404, detail="Book not found")
@@ -63,11 +63,11 @@ class Book:
             updated_at=updatedBook.update_time
         )
 
-    def delete(self,  id) -> DeleteResponse:
+    def delete(self,  id) :
         if session_instance.delete(BookTable, id):
-            return DeleteResponse(message="Book deleted successfully")
+            return {"message": "204  no  content"}
         else:
-            return DeleteResponse(message="Book not found")
+            return {"message": "Book not found"}
 
     def getMiniBook(self, id) -> MiniBookResponse:
         book=session_instance.read_one(BookTable, id)

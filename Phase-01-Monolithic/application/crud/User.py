@@ -1,21 +1,21 @@
 from fastapi  import HTTPException
-from application.schemas.User import RegisterResponse, RegisterAction, UserResponse, UsersResponse, MiniUserResponse, UsernameResponse
+from application.schemas.User import RegisterAction, UserResponse, UsersResponse, MiniUserResponse, UsernameResponse
 from application.models.User import User as UserTable
 from application.database.Session import session_instance
 from typing  import List
 
 class User:
 
-    def register(self, registerInfo: RegisterAction) -> RegisterResponse:
+    def register(self, registerInfo: RegisterAction):
         try:
             user=UserTable(username=registerInfo.name,
                            email=registerInfo.email,
                            role=registerInfo.role
             )
             session_instance.write(user)
-            return RegisterResponse(message="User registered succesfully")
+            return {"message": "User registered succesfully"}
         except:
-            return RegisterResponse(message="Registration failed")
+            return {"message": "Registration failed"}
 
     def getUsers(self) -> List[UsersResponse]:
         users=session_instance.read_all(UserTable)
