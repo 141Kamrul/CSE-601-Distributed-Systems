@@ -26,6 +26,9 @@ class MiniBookResponse(BaseModel):
     title: str
     author: str
 
+class BookNumberAction(BaseModel):
+    available_copies: int
+
 #
 class BooksResponse(BaseModel):
     book_id: int

@@ -16,6 +16,10 @@ class MiniUserResponse(BaseModel):
     id: int
     name: str
     email: str
+
+class UserLoanAction(BaseModel):
+    books_borrowed: int
+    current_borrows: int
 #
 
 class UsersResponse(BaseModel):

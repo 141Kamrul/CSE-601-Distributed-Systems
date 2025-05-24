@@ -1,7 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel
 from application.schemas.Book import MiniBookResponse
-from application.schemas.User import UserResponse
+from application.schemas.User import MiniUserResponse
 
 
 class LoanAction(BaseModel):
@@ -39,7 +39,7 @@ class LoanOfUserResponse(BaseModel):
 
 class OverdueLoanResponse(BaseModel):
     id: int
-    user: UserResponse
+    user: MiniUserResponse
     book: MiniBookResponse
     issue_date: datetime
     due_date: datetime
@@ -47,6 +47,11 @@ class OverdueLoanResponse(BaseModel):
 
 class ExtendLoanAction(BaseModel):
     extension_days: int
+
+class UpdateLoanAction(BaseModel):
+    extension_days: int
+    extensions_count: int
+    extended_due_date: datetime
 
 class ExtendedLoanResponse(BaseModel):
     id: int
@@ -56,7 +61,7 @@ class ExtendedLoanResponse(BaseModel):
     original_due_date: datetime
     extended_due_date: datetime | None
     status: str
-    extension_count: int
+    extensions_count: int
 
 #
 class LoanIdAction(BaseModel):
@@ -66,6 +71,6 @@ class LoanIdAction(BaseModel):
 
 class ReturnUpdateAction(BaseModel):
     status: str
-    return_time: datetime | None
+    return_date: datetime | None
 
 

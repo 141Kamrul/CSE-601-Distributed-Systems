@@ -1,5 +1,5 @@
 from fastapi  import HTTPException
-from application.schemas.User import RegisterAction, UserResponse, UsersResponse, MiniUserResponse, UsernameResponse
+from application.schemas.User import RegisterAction, UserResponse, UsersResponse, MiniUserResponse, UsernameResponse, UserLoanAction
 from application.models.User import User as UserTable
 from application.database.Session import session_instance
 from typing  import List
@@ -31,6 +31,26 @@ class User:
             current_borrows=user.current_borrows
         )
 
+    def loanNumber(self, id, currentChange, totalChange):
+        user=session_instance.read_one(UserTable,id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        userLoanAction=UserLoanAction(
+            current_borrows=user.current_borrows+currentChange,
+            books_borrowed=user.books_borrowed+totalChange
+        )
+        session_instance.update(UserTable, id, userLoanAction)
+
+
+    def getMiniUser(self, id) -> MiniUserResponse:
+        user=session_instance.read_one(UserTable,id)
+        return MiniUserResponse(
+            id=user.id,
+            name=user.name,
+            email=user.email
+        )
+
     #
 
     def getUsers(self) -> List[UsersResponse]:
@@ -41,21 +61,13 @@ class User:
             usersResponses.append(
                 UsersResponse(
                     user_id=user.id,
-                    name=user.username,
+                    name=user.name,
                     email=user.email,
                     role=user.role
                 )
             )
         return usersResponses
 
-
-    def getMiniUser(self, id) -> MiniUserResponse:
-        user=session_instance.read_one(UserTable,id)
-        return MiniUserResponse(
-            user_id=user.id,
-            name=user.username,
-            email=user.email
-        )
 
     def getTotalUser(self):
         return session_instance.count_all(UserTable)

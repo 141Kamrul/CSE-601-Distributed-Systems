@@ -21,9 +21,11 @@ def returns(loanId: LoanIdAction):
 def getLoansUser(user_id):
     return loan.getLoansUser(user_id)
 
-@router.get("/loans/overdue", response_model=List[LoanOfUserResponse])
-def getOverdueLoans():
-    return loan.getOverdueLoans()
+@router.get("/loans/overdue/", response_model=List[LoanOfUserResponse])
+def getAllOverdueLoans():
+    return loan.getAllOverdueLoans()
+
+
 
 @router.put("/loans/{id}/extend",  response_model=ExtendedLoanResponse)
 def extendUserLoan(loan_id, extendInfo: ExtendLoanAction):

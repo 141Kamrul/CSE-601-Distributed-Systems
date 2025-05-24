@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from application.schemas.Book import AddBookAction, DetailedBookResponse, BooksResponse, UpdateBookAction, MiniBookResponse
+from application.schemas.Book import AddBookAction, DetailedBookResponse, BooksResponse, UpdateBookAction, MiniBookResponse, BookNumberAction
 from application.models.Book import Book as BookTable
 from application.database.Session import session_instance
 from typing import List
@@ -54,6 +54,11 @@ class Book:
             return {"message": "204  no  content"}
         else:
             return {"message": "Book not found"}
+
+    def updateBookCopy(self, id, change):
+        book=session_instance.read_one(BookTable,id)
+        bookNumberAction=BookNumberAction(available_copies=book.available_copies+change)
+        session_instance.update(BookTable, id, bookNumberAction)
 
     #
 
