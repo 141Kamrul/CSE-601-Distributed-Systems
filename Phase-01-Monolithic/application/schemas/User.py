@@ -6,9 +6,9 @@ class RegisterAction(BaseModel):
     role: str
 
 class UserResponse(BaseModel):
-    user_id: int
     name: str
     email: str
+    role: str
     books_borrowed:  int
     current_borrows: int
 
