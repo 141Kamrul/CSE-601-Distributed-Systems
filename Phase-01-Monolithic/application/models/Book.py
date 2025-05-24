@@ -13,5 +13,5 @@ class Book(Base):
     copies: int=Column(Integer, default=0)
     available_copies: int=Column(Integer, default=0)
     created_at: datetime=Column(DateTime, default=datetime.utcnow)
-    updated_at: datetime=Column(DateTime, default=None, onupdate=datetime.utcnow)
+    updated_at: Optional[datetime]=Column(DateTime, default=None, onupdate=datetime.utcnow)
     borrow_count: int=Column(Integer, default=0)
