@@ -13,7 +13,6 @@ class ActiveUserResponse(BaseModel):
     books_borrowed: int
     current_borrows: int
 
-
 class OverviewResponse(BaseModel):
     total_books: int
     total_users: int

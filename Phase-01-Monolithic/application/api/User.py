@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 from application.crud.User import User
-from application.schemas.User import RegisterAction, UserResponse, UsersResponse
-from typing import List
+from application.schemas.User import RegisterAction, UserResponse
 
 router=APIRouter(prefix='',tags=['User'])
 
@@ -14,9 +13,3 @@ def register(registerInfo: RegisterAction):
 @router.get("/users/{id}",  response_model=UserResponse)
 def getUser(id):
     return user.getUser(id)
-
-#
-
-@router.get("/getusers/", response_model=List[UsersResponse])
-def getUsers():
-    return user.getUsers()

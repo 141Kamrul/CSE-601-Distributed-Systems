@@ -29,11 +29,3 @@ class MiniBookResponse(BaseModel):
 class BookNumberAction(BaseModel):
     available_copies: int
     borrow_count: int
-
-#
-class BooksResponse(BaseModel):
-    book_id: int
-    title: str
-    author: str
-    isbn: str
-    copies: int

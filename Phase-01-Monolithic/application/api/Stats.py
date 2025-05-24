@@ -3,7 +3,6 @@ from application.schemas.Stats import PopularBookResponse, ActiveUserResponse, O
 from application.crud.Stats import Stats
 from typing import List
 
-
 router=APIRouter(prefix='',tags=['Stats'])
 
 stats=Stats()

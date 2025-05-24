@@ -20,13 +20,3 @@ class MiniUserResponse(BaseModel):
 class UserLoanAction(BaseModel):
     books_borrowed: int
     current_borrows: int
-#
-
-class UsersResponse(BaseModel):
-    user_id: int
-    name: str
-    email: str
-    role: str
-
-class UsernameResponse(BaseModel):
-    name: str

@@ -4,7 +4,6 @@ from application.api.Book import router as book_router
 from application.api.Loan import router as loan_router
 from application.api.Stats import router as stats_router
 from application.database.Session import session_instance
-from sqlalchemy import  text
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()

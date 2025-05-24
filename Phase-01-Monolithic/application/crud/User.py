@@ -1,12 +1,11 @@
 from fastapi  import HTTPException
-from application.schemas.User import RegisterAction, UserResponse, UsersResponse, MiniUserResponse, UsernameResponse, UserLoanAction
+from application.schemas.User import RegisterAction, UserResponse, MiniUserResponse, UserLoanAction
 from application.schemas.Stats import ActiveUserResponse
 from application.models.User import User as UserTable
 from application.database.Session import session_instance
 from typing  import List
 
 class User:
-    """Class for User"""
 
     def register(self, registerInfo: RegisterAction):
         user=UserTable(name=registerInfo.name,
@@ -68,31 +67,3 @@ class User:
 
     def getTotalUser(self):
         return session_instance.count_all(UserTable)
-
-    #
-
-    def getUsers(self) -> List[UsersResponse]:
-        users=session_instance.read_all(UserTable)
-        print(users)
-        usersResponses=[]
-        for user in  users:
-            usersResponses.append(
-                UsersResponse(
-                    user_id=user.id,
-                    name=user.name,
-                    email=user.email,
-                    role=user.role
-                )
-            )
-        return usersResponses
-
-
-
-    def getUsername(self, id):
-        user=session_instance.read_one(UserTable,id)
-        return UsernameResponse(name=user.username)
-
-    
-
-    
-

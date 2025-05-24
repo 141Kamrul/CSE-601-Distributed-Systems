@@ -63,14 +63,9 @@ class ExtendedLoanResponse(BaseModel):
     status: str
     extensions_count: int
 
-#
 class LoanIdAction(BaseModel):
     loan_id: int
-
- 
 
 class ReturnUpdateAction(BaseModel):
     status: str
     return_date: datetime | None
-
-

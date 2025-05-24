@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from application.schemas.Book import AddBookAction, DetailedBookResponse, BooksResponse, UpdateBookAction, MiniBookResponse, BookNumberAction
+from application.schemas.Book import AddBookAction, DetailedBookResponse, BookNumberAction, MiniBookResponse
 from application.schemas.Stats import PopularBookResponse
 from application.models.Book import Book as BookTable
 from application.database.Session import session_instance
@@ -64,6 +64,17 @@ class Book:
         )
         session_instance.update(BookTable, id, bookNumberAction)
 
+    def getMiniBook(self, id) -> List[MiniBookResponse]:
+        book=session_instance.read_one(BookTable, id)
+        if not book:
+            raise HTTPException(status_code=404, detail="Book not found")
+
+        return MiniBookResponse(
+            id=book.id,
+            title=book.title,
+            author=book.author,
+        )
+
     def getMiniBooks(self) -> List[PopularBookResponse]:
         books=session_instance.read_all(BookTable)
         miniBooks=[]
@@ -94,21 +105,3 @@ class Book:
         for book in books:
             count+=book.borrow_count
         return count
-            
-    #
-
-    def getBooks(self) -> List[BooksResponse]:
-        books=session_instance.read_all(BookTable)
-        print(books)
-        booksResponses=[]
-        for book in books:
-            booksResponses.append(
-                BooksResponse(
-                    book_id=book.id,
-                    title=book.title,
-                    author=book.author,
-                    isbn=book.isbn,
-                    copies=book.copies,
-                )
-            )
-        return booksResponses

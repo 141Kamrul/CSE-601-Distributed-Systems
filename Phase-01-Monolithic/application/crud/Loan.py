@@ -1,10 +1,8 @@
 from fastapi  import HTTPException
 from application.schemas.Loan import LoanResponse, LoanAction, LoanIdAction, ReturnResponse, ReturnUpdateAction, LoanOfUserResponse, OverdueResponse, ExtendedLoanResponse, UpdateLoanAction
-from application.schemas.Book import UpdateBookAction
 from application.models.Loan import Loan as LoanTable
 from application.database.Session import session_instance
 from typing import List
-from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime, timezone, timedelta
 from application.crud.User import User
 from application.crud.Book import Book
@@ -153,28 +151,3 @@ class Loan:
             if loan.return_date and loan.return_date.date()==datetime.utcnow().date():
                 count+=1
         return count
-
-    #
-
-    def getActiveUsers(self):
-        loans=session_instance.read_filter_all(LoanTable)
-        user_stats = defaultdict(lambda: {
-            "books_borrowed": 0,
-            "current_borrows": 0
-        })
-    
-    
-        for loan in all_loans:
-            user_stats[loan.user_id]["books_borrowed"] += 1
-            if loan.status == "ACTIVE":
-                user_stats[loan.user_id]["current_borrows"] += 1
-    
-        sorted_users = sorted(
-            user_stats.items(),
-            key=lambda x: x[1]["current_borrows"],
-            reverse=True
-        )
-    
-        return dict(sorted_users)
-
-
