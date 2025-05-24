@@ -129,10 +129,12 @@ class Loan:
         )
 
     def getTotalOverdueLoans(self):
-        loans=session_instance.read_all(LoanTable)
+        loans=session_instance.read_filter_all(LoanTable,status="ACTIVE")
         count=0
         for loan in loans:
-            if loan.status=="ACTIVE":
+            due_date=loan.extended_due_date if loan.extended_due_date else loan.original_due_date
+            days_overdue=(datetime.utcnow().date()-due_date.date()).days
+            if days_overdue<0:
                 count+=1
         return count
 
@@ -140,7 +142,7 @@ class Loan:
         loans=session_instance.read_all(LoanTable)
         count=0
         for loan in loans:
-            if loan.issue_time.date()==datetime.utcnow().date():
+            if loan.issue_date.date()==datetime.utcnow().date():
                 count+=1
         return count
 
@@ -148,9 +150,11 @@ class Loan:
         loans=session_instance.read_all(LoanTable)
         count=0
         for loan in loans:
-            if loan.return_time.date()==datetime.utcnow().date():
+            if loan.return_date and loan.return_date.date()==datetime.utcnow().date():
                 count+=1
         return count
+
+    #
 
     def getActiveUsers(self):
         loans=session_instance.read_filter_all(LoanTable)

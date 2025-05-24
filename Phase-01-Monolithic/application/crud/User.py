@@ -1,5 +1,6 @@
 from fastapi  import HTTPException
 from application.schemas.User import RegisterAction, UserResponse, UsersResponse, MiniUserResponse, UsernameResponse, UserLoanAction
+from application.schemas.Stats import ActiveUserResponse
 from application.models.User import User as UserTable
 from application.database.Session import session_instance
 from typing  import List
@@ -51,6 +52,23 @@ class User:
             email=user.email
         )
 
+    def getActiveUsers(self) -> List[ActiveUserResponse]:
+        users=session_instance.read_all(UserTable)
+        miniUsers=[]
+        for  user in users:
+            miniUsers.append(
+                ActiveUserResponse(
+                    user_id=user.id,
+                    name=user.name,
+                    books_borrowed=user.books_borrowed,
+                    current_borrows=user.current_borrows
+                )
+            )
+        return miniUsers
+
+    def getTotalUser(self):
+        return session_instance.count_all(UserTable)
+
     #
 
     def getUsers(self) -> List[UsersResponse]:
@@ -69,8 +87,6 @@ class User:
         return usersResponses
 
 
-    def getTotalUser(self):
-        return session_instance.count_all(UserTable)
 
     def getUsername(self, id):
         user=session_instance.read_one(UserTable,id)

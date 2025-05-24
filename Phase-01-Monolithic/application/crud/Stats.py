@@ -5,39 +5,19 @@ from application.crud.Loan import Loan
 from typing import List
 
 class Stats:
-    def getPopularBooks() -> List[PopularBookResponse]:
+    def getPopularBooks(self) -> List[PopularBookResponse]:
         book=Book()
-        books=book.getMiniBook()
-        popularBooks=[]
-        for book in books:
-            popularBooks.append(
-                PopularBookResponse(
-                    book_id=book.id,
-                    title=book.title,
-                    author=book.author,
-                    borrow_count=book.copies-book.available_copies
-                )
-            )
+        popularBooks=book.getMiniBooks()
+        popularBooks.sort(key=lambda x: x.borrow_count, reverse=True)
         return popularBooks
 
-    def getActiveUsers() -> List[ActiveUserResponse]:
-        loan=Loan()
+    def getActiveUsers(self) -> List[ActiveUserResponse]:
         user=User()
-        activeUsers=loan.getActiveUsers()
-        mostActiveUsers=[]
-
-        for user_id, stats in activeUsers.items():  
-            mostActiveUsers.append(
-                ActiveUserResponse(
-                    user_id=user_id, 
-                    name=user.getUsername(user_id),  
-                    books_borrowed=stats["books_borrowed"],  
-                    current_borrows=stats["current_borrows"]  
-                )
-            )
+        mostActiveUsers=user.getActiveUsers()
+        mostActiveUsers.sort(key=lambda x: x.books_borrowed, reverse=True)
         return mostActiveUsers
 
-    def getOverview() -> OverviewResponse:
+    def getOverview(self) -> OverviewResponse:
         book=Book()
         user=User()
         loan=Loan()

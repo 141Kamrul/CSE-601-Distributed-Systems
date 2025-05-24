@@ -22,12 +22,13 @@ class UpdateBookAction(BaseModel):
     available_copies: int
 
 class MiniBookResponse(BaseModel):
-    book_id: int
+    id: int
     title: str
     author: str
 
 class BookNumberAction(BaseModel):
     available_copies: int
+    borrow_count: int
 
 #
 class BooksResponse(BaseModel):

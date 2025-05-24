@@ -1,5 +1,6 @@
 from fastapi import HTTPException
 from application.schemas.Book import AddBookAction, DetailedBookResponse, BooksResponse, UpdateBookAction, MiniBookResponse, BookNumberAction
+from application.schemas.Stats import PopularBookResponse
 from application.models.Book import Book as BookTable
 from application.database.Session import session_instance
 from typing import List
@@ -57,9 +58,43 @@ class Book:
 
     def updateBookCopy(self, id, change):
         book=session_instance.read_one(BookTable,id)
-        bookNumberAction=BookNumberAction(available_copies=book.available_copies+change)
+        bookNumberAction=BookNumberAction(
+            available_copies=book.available_copies+change,
+            borrow_count=book.borrow_count+1
+        )
         session_instance.update(BookTable, id, bookNumberAction)
 
+    def getMiniBooks(self) -> List[PopularBookResponse]:
+        books=session_instance.read_all(BookTable)
+        miniBooks=[]
+        for book  in books:
+            miniBooks.append(
+                PopularBookResponse(
+                    book_id=book.id,
+                    title=book.title,
+                    author=book.author,
+                    borrow_count=book.borrow_count
+                )
+            )
+        return miniBooks
+
+    def getTotalBooks(self):
+        return session_instance.count_all(BookTable)
+
+    def getTotalAvailableBooks(self):
+        books=session_instance.read_all(BookTable)
+        count=0
+        for book in books:
+            count+=book.available_copies
+        return count
+
+    def getTotalBorrowedBooks(self):
+        books=session_instance.read_all(BookTable)
+        count=0
+        for book in books:
+            count+=book.borrow_count
+        return count
+            
     #
 
     def getBooks(self) -> List[BooksResponse]:
@@ -77,41 +112,3 @@ class Book:
                 )
             )
         return booksResponses
-
-
-
-
-    def getMiniBook(self, id) -> MiniBookResponse:
-        book=session_instance.read_one(BookTable, id)
-        return MiniBookResponse(
-            book_id=book.id,
-            title=book.title,
-            author=book.author
-        )
-
-    def getTotalBooks(self):
-        return session_instance.count_all(BookTable)
-
-    def getTotalAvailableBooks(self):
-        books=session_instance.read_all(BookTable)
-        count=0
-        for book in books:
-            if book.available_copies>0:
-                count+=1
-        return count
-
-    def getTotalBorrowedBooks(self):
-        books=session_instance.read_all(BookTable)
-        count=0
-        for book in books:
-            count+=book.copies-book.available_copies
-        return count
-
-    def getPopularBooks(self):
-        books=session_instance.read_all(BookTable)
-        sorted_books = sorted(
-            books,
-            key=lambda book: book.copies - book.available_copies,
-            reverse=True  
-        )
-        return sorted_books
