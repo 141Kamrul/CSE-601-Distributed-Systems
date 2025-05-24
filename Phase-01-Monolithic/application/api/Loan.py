@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from application.crud.Loan import Loan,  User
-from application.schemas.Loan import LoanAction, LoanResponse, ReturnResponse,  LoanIdAction, LoanOfUserResponse, ExtendedLoanResponse, ExtendLoanAction
+from application.schemas.Loan import LoanAction, LoanResponse, ReturnResponse,  LoanIdAction, LoanOfUserResponse, ExtendedLoanResponse, ExtendLoanAction, OverdueResponse
 from typing import List
 
 router=APIRouter(prefix='',tags=['Loan'])
@@ -21,7 +21,7 @@ def returns(loanId: LoanIdAction):
 def getLoansUser(user_id):
     return loan.getLoansUser(user_id)
 
-@router.get("/loans/overdue/", response_model=List[LoanOfUserResponse])
+@router.get("/loans/overdue/", response_model=List[OverdueResponse])
 def getAllOverdueLoans():
     return loan.getAllOverdueLoans()
 

@@ -1,7 +1,7 @@
 @echo off
 echo Activating virtual environment...
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-call phase-01-myvenv\Scripts\activate
+call newvenv\Scripts\activate
 
 echo Installing dependencies...
 pip install -r requirements.txt

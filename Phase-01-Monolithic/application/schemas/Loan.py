@@ -37,7 +37,7 @@ class LoanOfUserResponse(BaseModel):
     return_date: datetime | None
     status: str
 
-class OverdueLoanResponse(BaseModel):
+class OverdueResponse(BaseModel):
     id: int
     user: MiniUserResponse
     book: MiniBookResponse

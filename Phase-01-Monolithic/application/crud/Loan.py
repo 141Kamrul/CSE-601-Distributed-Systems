@@ -1,5 +1,5 @@
 from fastapi  import HTTPException
-from application.schemas.Loan import LoanResponse, LoanAction, LoanIdAction, ReturnResponse, ReturnUpdateAction, LoanOfUserResponse,  OverdueLoanResponse, ExtendedLoanResponse, UpdateLoanAction
+from application.schemas.Loan import LoanResponse, LoanAction, LoanIdAction, ReturnResponse, ReturnUpdateAction, LoanOfUserResponse, OverdueResponse, ExtendedLoanResponse, UpdateLoanAction
 from application.schemas.Book import UpdateBookAction
 from application.models.Loan import Loan as LoanTable
 from application.database.Session import session_instance
@@ -81,23 +81,25 @@ class Loan:
         return loanResponses
 
 
-    def getAllOverdueLoans(self) -> List[OverdueLoanResponse]:
-        loans=session_instance.read_all(LoanTable)
+    def getAllOverdueLoans(self) -> List[OverdueResponse]:
+        loans=session_instance.read_filter_all(LoanTable,status="ACTIVE")
         user=User()
         book=Book()
         overDueLoans=[]
         for loan in loans:
-            days_overdue=(datetime.utcnow().date()-loan.original_due_date.date()).days
-            if days_overdue<0 or loan.status=="RETURNED":
-                continue
+            due_date=loan.extended_due_date if loan.extended_due_date else loan.original_due_date
 
+            days_overdue=(datetime.utcnow().date()-due_date.date()).days
+            if days_overdue<0:
+                continue
+                
             overDueLoans.append(
-                OverdueLoanResponse(
+                OverdueResponse(
                     id=loan.id,
                     user=user.getMiniUser(loan.user_id),
                     book=book.getMiniBook(loan.book_id),
                     issue_date=loan.issue_date,
-                    due_date=loan.original_due_date,
+                    due_date=due_date,
                     days_overdue=days_overdue
                 )
             )
