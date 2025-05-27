@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"google.golang.org/grpc"
-	pb "rpc/generated" // Replace with your module path
+	pb "rpc/generated" 
 )
 
 func main() {
@@ -20,5 +20,5 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to call Add: %v", err)
 	}
-	log.Printf("Result: %d", res.Result) // Output: 8
+	log.Printf("Result: %d", res.Result) 
 }
