@@ -26,4 +26,4 @@ app.include_router(stats_router)
 
 @app.get("/")
 async def root():
-    return {"message": "Hello, world!"}
+    return {"message": "Application Running"}
